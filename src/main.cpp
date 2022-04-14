@@ -23,9 +23,9 @@ bool forwardMatrixCheck = 0;
 char accumaltivePosition = 0;  // right = 1 left = 2 forward = 3 backward = 4
 
 bool checkNextPosition(int i, int j) {
-  if (PositionArray[i][j] == 0 || 1) {
+  if (PositionArray[i][j] == (0 || 1)) {
     return 0;
-  } else if (PositionArray[i][j] == 4) {
+  } else {
     return 1;
   }
 }
@@ -86,7 +86,7 @@ void moveDir(char Dir) {
 }
 
 void NextCell(char Dir) {
-  Serial.print(F("left next cell  "));
+  Serial.println(F("left next cell  "));
   int i = 1;
   if ((left > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
     if (Dir == 'L') {
@@ -135,16 +135,17 @@ void AddBlockToMatrix() {
 }
 
 int servocontrol() {
+  // DataInput();
   getDistance();
 
-  Serial.println(F(" servo "));
+  Serial.println(" servo ");
 
   // compare ultrasonic sensor outputs
 
   if (x_value + 1 < 50 || y_value + 1 < 50) {  // matrix limits, distance limits .... you can add other limits like finding the source here
 
     if ((right > squareSize) && (rightMatrixCheck == 1)) {  // priority is always right
-      Serial.print(F("right servo "));
+      Serial.print("right servo ");
 
       turnDirection(90);
       getDistance();
@@ -158,7 +159,7 @@ int servocontrol() {
     }
 
     if ((left > squareSize) && (leftMatrixCheck == 1)) {
-      Serial.print(F("left servo "));
+      Serial.print("left servo ");
       turnDirection(-90);
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1)) {
@@ -166,29 +167,28 @@ int servocontrol() {
         NextCell('L');
         getDistance();
       }
-      turnDirection(90);  // go back facing the forward position
+      turnDirection('R');  // go back facing the forward position
     }
 
     if ((forward > squareSize) && (forwardMatrixCheck == 1)) {
-      Serial.print(F("forward servo "));
+      Serial.print("forward servo ");
       getDistance();
-      while ((forward > squareSize) && (leftMatrixCheck == 1) && (forward > squareSize) && (rightMatrixCheck == 1) && (left > squareSize) && (leftMatrixCheck == 1)) {
-        moveDir('f');
+      while ((forward > squareSize) && (leftMatrixCheck == 1) && (rightMatrixCheck == 1) && (left > squareSize)) {
+        moveDir('F');
         getDistance();
       }
     }
-    if (((forward < squareSize) || (leftMatrixCheck == 0)) && ((forward < squareSize) || (rightMatrixCheck == 0)) && ((left < squareSize) || (leftMatrixCheck == 0))) {  // stop
-      Serial.println(F("mapped everything or stuck"));
+    if (((forward < squareSize) || (leftMatrixCheck == 4)) && ((forward < squareSize) || (rightMatrixCheck == 4)) && ((left < squareSize) || (leftMatrixCheck == 4))) {  // stop
+      Serial.println("mapped everything or stuck");
       AddBlockToMatrix();
     }
 
   } else {
-    Serial.println(F("reached max limits"));
+    Serial.println("reached max limits");
     AddBlockToMatrix();
   }
   return 0;
 }
-
 void creatematrix() {
   for (int i = 0; i < 50; i++) {
     for (int j = 0; j < 50; j++) {
