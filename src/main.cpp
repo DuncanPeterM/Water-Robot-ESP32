@@ -7,20 +7,12 @@ Distance Ultrasonic;
 #define squareSize 21
 #define echoPin 2  // attach pin D2 Arduino to pin Echo of HC-SR04
 #define trigPin 4  // attach pin D3 Arduino to pin Trig of HC-SR04
-unsigned char left = 200;
-unsigned char right = 200;
-unsigned char forward = 200;
 
 byte PositionArray[50][50] = {0};
-int pos = 0;  // variable to store the servo position
-int x_value = 24;
-int y_value = 24;
 
-unsigned char leftMatrixCheck = 0;
-unsigned char rightMatrixCheck = 0;
-unsigned char forwardMatrixCheck = 0;
-
-char accumaltivePosition = 0;  // right = 1 left = 2 forward = 3 backward = 4
+int x_value, y_value = 24;
+unsigned char left, right, forward;
+unsigned char leftMatrixCheck, rightMatrixCheck, forwardMatrixCheck = 0;
 
 int checkNextPosition(int i, int j) {
   if ((PositionArray[i][j] == 0) || (PositionArray[i][j] == 1)) {
