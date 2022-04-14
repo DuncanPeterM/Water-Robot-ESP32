@@ -16,16 +16,16 @@ int pos = 0;  // variable to store the servo position
 int x_value = 24;
 int y_value = 24;
 
-bool leftMatrixCheck = 0;
-bool rightMatrixCheck = 0;
-bool forwardMatrixCheck = 0;
+unsigned char leftMatrixCheck = 0;
+unsigned char rightMatrixCheck = 0;
+unsigned char forwardMatrixCheck = 0;
 
 char accumaltivePosition = 0;  // right = 1 left = 2 forward = 3 backward = 4
 
 bool checkNextPosition(int i, int j) {
-  if (PositionArray[i][j] == (0 || 1)) {
+  if ((PositionArray[i][j] == 0) || (PositionArray[i][j] == 1)) {
     return 0;
-  } else {
+  } else if (PositionArray[i][j] == 4) {
     return 1;
   }
 }
@@ -41,17 +41,17 @@ void getDistance() {
   leftMatrixCheck = checkNextPosition(x_value, y_value - 1);
 }
 
-void turnDirection(int Rotation) {
+void turnDirection(char Rotation) {
   switch (Rotation) {
-    case -90:
+    case 'L':
       Serial.println(F("turn 90 to left "));
       // add the code that turns 90 degree to the right
       break;
-    case 90:
+    case 'R':
       Serial.println(F("turn 90 to right "));
       // add the code that turns 90 degree to the right
       break;
-    case 180:
+    case 'B':
       Serial.println(F("turn 180 "));
       // add the code that reverse the direction
       break;
@@ -63,21 +63,17 @@ void moveDir(char Dir) {
     case 'F':
       Serial.println(F("go foward"));
       x_value = x_value + 1;
-      y_value = y_value;
       break;
     case 'B':
       Serial.println(F("go backwards"));
       x_value = x_value - 1;
-      y_value = y_value;
       break;
     case 'L':
       Serial.println(F("go left"));
-      x_value = x_value;
       y_value = y_value - 1;
       break;
     case 'R':
       Serial.println(F("go right"));
-      x_value = x_value;
       y_value = y_value + 1;
       break;
   }
@@ -85,27 +81,24 @@ void moveDir(char Dir) {
   Serial.println(PositionArray[x_value][y_value]);
 }
 
-void NextCell(char Dir) {
-  Serial.println(F("left next cell  "));
+void rightNextCell() {
+  Serial.print("right next cell");
   int i = 1;
-  if ((left > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
-    if (Dir == 'L') {
-      turnDirection(-90);
-    } else if (Dir == 'R') {
-      turnDirection(90);
-    }
+  if ((right > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
+    if ((left > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24)
+      turnDirection('R');  // do 1 time only
   }
   getDistance();
 
   while ((forward > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
-    moveDir('B');
+    turnDirection('B');
     i++;
     getDistance();
-    Serial.print(F("left next cell while 1 "));
+    Serial.print("right next cell while 1 ");
   }
-  turnDirection(180);  // revese the position to go backward to the position before checking the nighbouring cell
+  turnDirection('B');  // revese the position to go backward to the position before checking the nighbouring cell
   while (i > 1) {
-    Serial.print(F("left next cell while 2 "));
+    Serial.print("right next cell while 2 ");
 
     // add the code for moving 1 step forward
     i--;
@@ -116,11 +109,38 @@ void NextCell(char Dir) {
   }
 
   if (i == 0) {
-    if (Dir == 'L') {
-      turnDirection(-90);
-    } else if (Dir == 'R') {
-      turnDirection(90);
+    turnDirection('R');  // look to the origianl direction
+  }
+}
+
+void leftNextCell() {
+  Serial.print("left next cell  ");
+  int i = 1;
+  if ((left > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
+    turnDirection('L');                                                                           // do 1 time only
+  }
+  getDistance();
+
+  while ((forward > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
+    turnDirection('B');
+    i++;
+    getDistance();
+    Serial.print("left next cell while 1 ");
+  }
+  turnDirection('B');  // revese the position to go backward to the position before checking the nighbouring cell
+  while (i > 1) {
+    Serial.print("left next cell while 2 ");
+
+    // add the code for moving 1 step forward
+    i--;
+
+    if (i == 1) {
+      i = 0;
     }
+  }
+
+  if (i == 0) {
+    turnDirection('L');  // look to the origianl direction
   }
 }
 
@@ -135,7 +155,6 @@ void AddBlockToMatrix() {
 }
 
 int servocontrol() {
-  // DataInput();
   getDistance();
 
   Serial.println(" servo ");
@@ -152,7 +171,7 @@ int servocontrol() {
 
       while ((forward > squareSize) && (rightMatrixCheck == 1)) {
         moveDir('R');
-        NextCell('R');
+        rightNextCell();
         getDistance();
       }
       turnDirection(-90);  // go back facing the forward position
@@ -164,7 +183,7 @@ int servocontrol() {
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1)) {
         moveDir('L');
-        NextCell('L');
+        leftNextCell();
         getDistance();
       }
       turnDirection('R');  // go back facing the forward position
@@ -173,7 +192,7 @@ int servocontrol() {
     if ((forward > squareSize) && (forwardMatrixCheck == 1)) {
       Serial.print("forward servo ");
       getDistance();
-      while ((forward > squareSize) && (leftMatrixCheck == 1) && (rightMatrixCheck == 1) && (left > squareSize)) {
+      while ((forward > squareSize) && (leftMatrixCheck == 1) && (forward > squareSize) && (rightMatrixCheck == 1) && (left > squareSize) && (leftMatrixCheck == 1)) {
         moveDir('F');
         getDistance();
       }
@@ -201,13 +220,18 @@ void creatematrix() {
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(trigPin, OUTPUT);  // Sets the trigPin as an OUTPUT
-  Ultrasonic.start();        // attaches the servo on pin 9 to the servo object
-  pinMode(echoPin, INPUT);   // Sets the echoPin as an INPUT
-  Serial.begin(9600);        // // Serial Communication is starting with 9600 of baudrate speed
+  Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
+  Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
   creatematrix();
 }
 
 void loop() {
+  for (int i = 0; i < 50; i++) {
+    for (int j = 0; j < 50; j++) {
+      Serial.print(PositionArray[i][j]);
+      Serial.print(" ");
+    }
+    Serial.println("");
+  }
   servocontrol();
 }
