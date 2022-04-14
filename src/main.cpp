@@ -22,11 +22,13 @@ unsigned char forwardMatrixCheck = 0;
 
 char accumaltivePosition = 0;  // right = 1 left = 2 forward = 3 backward = 4
 
-bool checkNextPosition(int i, int j) {
+int checkNextPosition(int i, int j) {
   if ((PositionArray[i][j] == 0) || (PositionArray[i][j] == 1)) {
     return 0;
   } else if (PositionArray[i][j] == 4) {
     return 1;
+  } else {
+    return 4;
   }
 }
 
@@ -82,7 +84,7 @@ void moveDir(char Dir) {
 }
 
 void rightNextCell() {
-  Serial.print("right next cell");
+  Serial.println(F("right next cell"));
   int i = 1;
   if ((right > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
     if ((left > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24)
@@ -94,11 +96,11 @@ void rightNextCell() {
     turnDirection('B');
     i++;
     getDistance();
-    Serial.print("right next cell while 1 ");
+    Serial.println(F("right next cell while 1 "));
   }
   turnDirection('B');  // revese the position to go backward to the position before checking the nighbouring cell
   while (i > 1) {
-    Serial.print("right next cell while 2 ");
+    Serial.println(F("right next cell while 2 "));
 
     // add the code for moving 1 step forward
     i--;
@@ -114,7 +116,7 @@ void rightNextCell() {
 }
 
 void leftNextCell() {
-  Serial.print("left next cell  ");
+  Serial.println(F("left next cell"));
   int i = 1;
   if ((left > squareSize) && (PositionArray[x_value - i][y_value] == 4) && (x_value - i) > 24) {  // check unvisited cells next to this cell
     turnDirection('L');                                                                           // do 1 time only
@@ -125,11 +127,11 @@ void leftNextCell() {
     turnDirection('B');
     i++;
     getDistance();
-    Serial.print("left next cell while 1 ");
+    Serial.println(F("left next cell while 1 "));
   }
   turnDirection('B');  // revese the position to go backward to the position before checking the nighbouring cell
   while (i > 1) {
-    Serial.print("left next cell while 2 ");
+    Serial.println(F("left next cell while 2 "));
 
     // add the code for moving 1 step forward
     i--;
@@ -157,14 +159,14 @@ void AddBlockToMatrix() {
 int servocontrol() {
   getDistance();
 
-  Serial.println(" servo ");
+  Serial.println(F(" servo "));
 
   // compare ultrasonic sensor outputs
 
   if (x_value + 1 < 50 || y_value + 1 < 50) {  // matrix limits, distance limits .... you can add other limits like finding the source here
 
     if ((right > squareSize) && (rightMatrixCheck == 1)) {  // priority is always right
-      Serial.print("right servo ");
+      Serial.println(F("right servo "));
 
       turnDirection(90);
       getDistance();
@@ -178,7 +180,7 @@ int servocontrol() {
     }
 
     if ((left > squareSize) && (leftMatrixCheck == 1)) {
-      Serial.print("left servo ");
+      Serial.println(F("left servo "));
       turnDirection(-90);
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1)) {
@@ -190,7 +192,7 @@ int servocontrol() {
     }
 
     if ((forward > squareSize) && (forwardMatrixCheck == 1)) {
-      Serial.print("forward servo ");
+      Serial.println(F("forward servo "));
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1) && (forward > squareSize) && (rightMatrixCheck == 1) && (left > squareSize) && (leftMatrixCheck == 1)) {
         moveDir('F');
@@ -198,16 +200,17 @@ int servocontrol() {
       }
     }
     if (((forward < squareSize) || (leftMatrixCheck == 4)) && ((forward < squareSize) || (rightMatrixCheck == 4)) && ((left < squareSize) || (leftMatrixCheck == 4))) {  // stop
-      Serial.println("mapped everything or stuck");
+      Serial.println(F("mapped everything or stuck"));
       AddBlockToMatrix();
     }
 
   } else {
-    Serial.println("reached max limits");
+    Serial.println(F("reached max limits"));
     AddBlockToMatrix();
   }
   return 0;
 }
+
 void creatematrix() {
   for (int i = 0; i < 50; i++) {
     for (int j = 0; j < 50; j++) {
