@@ -1,8 +1,10 @@
 #include <Arduino.h>
 
 #include "Distance.h"
+#include "MessageToArduino.h"
 
 Distance Ultrasonic;
+MessageToArduino Robot;
 
 #define squareSize 21
 #define echoPin 2  // attach pin D2 Arduino to pin Echo of HC-SR04
@@ -40,14 +42,17 @@ void turnDirection(char Rotation) {
     case 'L':
       Serial.println(F("turn 90 to left "));
       // add the code that turns 90 degree to the right
+      Robot.TurnLeft();
       break;
     case 'R':
       Serial.println(F("turn 90 to right "));
       // add the code that turns 90 degree to the right
+      Robot.TurnRight();
       break;
     case 'B':
       Serial.println(F("turn 180 "));
       // add the code that reverse the direction
+      Robot.TurnBack();
       break;
   }
 }
@@ -56,18 +61,22 @@ void moveDir(char Dir) {
   switch (Dir) {
     case 'F':
       Serial.println(F("go foward"));
+      Robot.Forward();
       x_value = x_value + 1;
       break;
     case 'B':
       Serial.println(F("go backwards"));
+      Robot.Backwards();
       x_value = x_value - 1;
       break;
     case 'L':
       Serial.println(F("go left"));
+      Robot.Left();
       y_value = y_value - 1;
       break;
     case 'R':
       Serial.println(F("go right"));
+      Robot.Right();
       y_value = y_value + 1;
       break;
   }
@@ -216,6 +225,7 @@ void creatematrix() {
 void setup() {
   // put your setup code here, to run once:
   Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
+  Robot.start();
   Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
   creatematrix();
 }
