@@ -5,9 +5,9 @@
 
 Servo myservo;
 
-#define echoPin 2
-#define trigPin 3
-#define servoPin 4
+#define echoPin 13
+#define trigPin 15
+#define servoPin 14
 
 Distance::Distance() {
 }

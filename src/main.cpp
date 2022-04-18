@@ -7,8 +7,6 @@ Distance Ultrasonic;
 MessageToArduino Robot;
 
 #define squareSize 21
-#define echoPin 2  // attach pin D2 Arduino to pin Echo of HC-SR04
-#define trigPin 4  // attach pin D3 Arduino to pin Trig of HC-SR04
 
 byte PositionArray[50][50] = {0};
 
@@ -174,7 +172,7 @@ int servocontrol() {
 
       while ((forward > squareSize) && (rightMatrixCheck == 1)) {
         moveDir('R');
-        rightNextCell();
+        //rightNextCell();
         getDistance();
       }
       turnDirection(-90);  // go back facing the forward position
@@ -186,7 +184,7 @@ int servocontrol() {
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1)) {
         moveDir('L');
-        leftNextCell();
+        //leftNextCell();
         getDistance();
       }
       turnDirection('R');  // go back facing the forward position
