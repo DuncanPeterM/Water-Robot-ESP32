@@ -10,9 +10,9 @@ MessageToArduino Robot;
 
 byte PositionArray[50][50] = {0};
 
-int x_value, y_value = 24;
-unsigned char left, right, forward;
-unsigned char leftMatrixCheck, rightMatrixCheck, forwardMatrixCheck = 0;
+int x_value = 24, y_value = 24;
+int left, right, forward;
+int leftMatrixCheck, rightMatrixCheck, forwardMatrixCheck = 0;
 
 int checkNextPosition(int i, int j) {
   if ((PositionArray[i][j] == 0) || (PositionArray[i][j] == 1)) {
@@ -26,12 +26,15 @@ int checkNextPosition(int i, int j) {
 
 void getDistance() {
   right = Ultrasonic.ScanRight();
+
   rightMatrixCheck = checkNextPosition(x_value, y_value + 1);
 
   forward = Ultrasonic.ScanFoward();
+  forward = forward - 10;
   forwardMatrixCheck = checkNextPosition(x_value + 1, y_value);
 
   left = Ultrasonic.ScanLeft();
+  left = left - 10;
   leftMatrixCheck = checkNextPosition(x_value, y_value - 1);
 }
 
@@ -162,7 +165,7 @@ int servocontrol() {
 
   // compare ultrasonic sensor outputs
 
-  if (x_value + 1 < 50 || y_value + 1 < 50) {  // matrix limits, distance limits .... you can add other limits like finding the source here
+  if (x_value + 1 <= 50 || y_value + 1 <= 50) {  // matrix limits, distance limits .... you can add other limits like finding the source here
 
     if ((right > squareSize) && (rightMatrixCheck == 1)) {  // priority is always right
       Serial.println(F("right servo "));
@@ -172,7 +175,7 @@ int servocontrol() {
 
       while ((forward > squareSize) && (rightMatrixCheck == 1)) {
         moveDir('R');
-        //rightNextCell();
+        // rightNextCell();
         getDistance();
       }
       turnDirection(-90);  // go back facing the forward position
@@ -184,7 +187,7 @@ int servocontrol() {
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1)) {
         moveDir('L');
-        //leftNextCell();
+        // leftNextCell();
         getDistance();
       }
       turnDirection('R');  // go back facing the forward position
@@ -193,10 +196,7 @@ int servocontrol() {
     if ((forward > squareSize) && (forwardMatrixCheck == 1)) {
       Serial.println(F("forward servo "));
       getDistance();
-      while ((forward > squareSize) && (leftMatrixCheck == 1) && (forward > squareSize) && (rightMatrixCheck == 1) && (left > squareSize) && (leftMatrixCheck == 1)) {
-        moveDir('F');
-        getDistance();
-      }
+      moveDir('F');
     }
     if (((forward < squareSize) || (leftMatrixCheck == 4)) && ((forward < squareSize) || (rightMatrixCheck == 4)) && ((left < squareSize) || (leftMatrixCheck == 4))) {  // stop
       Serial.println(F("mapped everything or stuck"));
