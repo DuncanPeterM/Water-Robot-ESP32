@@ -30,11 +30,11 @@ void getDistance() {
   rightMatrixCheck = checkNextPosition(x_value, y_value + 1);
 
   forward = Ultrasonic.ScanFoward();
-  forward = forward - 10;
+
   forwardMatrixCheck = checkNextPosition(x_value + 1, y_value);
 
   left = Ultrasonic.ScanLeft();
-  left = left - 10;
+
   leftMatrixCheck = checkNextPosition(x_value, y_value - 1);
 }
 
@@ -81,7 +81,9 @@ void moveDir(char Dir) {
       y_value = y_value + 1;
       break;
   }
-  PositionArray[x_value][y_value] = {1};
+  if (x_value < 50 && y_value < 50) {
+    PositionArray[x_value][y_value] = {1};
+  }
   Serial.println(PositionArray[x_value][y_value]);
 }
 
