@@ -72,12 +72,12 @@ void moveDir(char Dir) {
       break;
     case 'L':
       Serial.println(F("go left"));
-      Robot.Left();
+      Robot.Forward();
       y_value = y_value - 1;
       break;
     case 'R':
       Serial.println(F("go right"));
-      Robot.Right();
+      Robot.Forward();
       y_value = y_value + 1;
       break;
   }
