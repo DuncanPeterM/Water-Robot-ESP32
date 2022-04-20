@@ -3,7 +3,7 @@
 
 class MessageToArduino {
  private:
- public:
+  public:
   MessageToArduino();
 
   void start();
