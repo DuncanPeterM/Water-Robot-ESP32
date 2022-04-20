@@ -2,9 +2,11 @@
 
 #include "Distance.h"
 #include "MessageToArduino.h"
+#include "WebServer.h"
 
 Distance Ultrasonic;
 MessageToArduino Robot;
+WebServer Web;
 
 #define squareSize 21
 
@@ -226,6 +228,7 @@ void setup() {
   // put your setup code here, to run once:
   Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
   Robot.start();
+  Web.setup();
   Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
   creatematrix();
 }
