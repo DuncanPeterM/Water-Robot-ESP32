@@ -1,11 +1,12 @@
 #include "MessageToArduino.h"
 
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 String Message;
 MessageToArduino::MessageToArduino() {}
 
 void MessageToArduino::start() {
-  Serial2.begin(9600, SERIAL_8N1, 16, 17);
+  Serial2.begin(9600, SERIAL_8N1, 16, 12);
 }
 
 void MessageToArduino::Forward() {

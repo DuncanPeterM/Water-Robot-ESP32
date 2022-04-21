@@ -369,7 +369,6 @@ void WebServer::setup() {
   pinMode(MOTOR_2_PIN_1, OUTPUT);
   pinMode(MOTOR_2_PIN_2, OUTPUT);
 
-  Serial.begin(115200);
   Serial.setDebugOutput(false);
 
   camera_config_t config;
