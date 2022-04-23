@@ -6,7 +6,7 @@
 
 Distance Ultrasonic;
 MessageToArduino Robot;
-//WebServer Web;
+// WebServer Web;
 
 #define squareSize 21
 
@@ -237,8 +237,8 @@ void matrixprint() {
 void setup() {
   // put your setup code here, to run once:
   Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
-  Robot.start();
-  //Web.setup();
+  // Robot.start();
+  // Web.setup();
   Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
   Serial2.begin(9600, SERIAL_8N1, 16, 0);
   creatematrix();

@@ -21,7 +21,7 @@ void Distance::start() {
 
 void Distance::LookAngle(int angle) {
   myservo.write(angle + 90);
-  delay(100);  // to be changed to match later
+  delay(1000);  // to be changed to match later
 }
 
 int Distance::GetDistance() {
