@@ -4,6 +4,7 @@
 #define TXp2 0
 
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 String Message;
 MessageToArduino::MessageToArduino() {}
 
