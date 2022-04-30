@@ -245,6 +245,6 @@ void setup() {
 }
 
 void loop() {
-  Robot.Forward();
+  //Robot.Forward();
   servocontrol();
 }
