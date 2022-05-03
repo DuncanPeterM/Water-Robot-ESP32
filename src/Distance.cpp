@@ -25,7 +25,7 @@ void Distance::LookAngle(int angle) {
 }
 
 int Distance::GetDistance() {
-  long duration;
+  int duration;
 
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);

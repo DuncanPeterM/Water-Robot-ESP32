@@ -8,7 +8,7 @@ Distance Ultrasonic;
 MessageToArduino Robot;
 // WebServer Web;
 
-#define squareSize 21
+const int squareSize = 22;
 
 byte PositionArray[50][50] = {0};
 
@@ -182,6 +182,11 @@ int servocontrol() {
         // rightNextCell();
         getDistance();
       }
+      if(x_value<50 && y_value<50){
+        int tempx1=x_value;
+        int tempy1=y_value+1;
+        PositionArray[tempx1][tempy1]={0};
+      }
       turnDirection(-90);  // go back facing the forward position
     }
 
@@ -193,6 +198,11 @@ int servocontrol() {
         moveDir('L');
         // leftNextCell();
         getDistance();
+      }
+      if(x_value<50 && y_value<50){
+        int tempx1=x_value;
+        int tempy1=y_value-1;
+        PositionArray[tempx1][tempy1]={0};
       }
       turnDirection('R');  // go back facing the forward position
     }
@@ -247,4 +257,8 @@ void setup() {
 void loop() {
   //Robot.Forward();
   servocontrol();
+  Serial.print("x: ");
+  Serial.print(x_value);
+  Serial.print("y: ");
+  Serial.print(y_value);
 }
