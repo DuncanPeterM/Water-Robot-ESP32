@@ -179,7 +179,7 @@ int servocontrol() {
 
       while ((forward > squareSize) && (rightMatrixCheck == 1)) {
         moveDir('R');
-        // rightNextCell();
+        rightNextCell();
         getDistance();
       }
       if(x_value<50 && y_value<50){
@@ -196,7 +196,7 @@ int servocontrol() {
       getDistance();
       while ((forward > squareSize) && (leftMatrixCheck == 1)) {
         moveDir('L');
-        // leftNextCell();
+        leftNextCell();
         getDistance();
       }
       if(x_value<50 && y_value<50){
