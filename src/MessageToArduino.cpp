@@ -36,7 +36,7 @@ void MessageToArduino::Right() {
 
 void MessageToArduino::TurnLeft() {
   Serial2.println("X\n");
-  delay(8000);
+  delay(4000);
 }
 
 void MessageToArduino::TurnRight() {
