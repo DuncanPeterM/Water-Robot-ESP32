@@ -1,16 +1,16 @@
 #include <Arduino.h>
+#include <math.h>
 
 #include "Distance.h"
 #include "MessageToArduino.h"
-//#include "WebServer.h"
 
 Distance Ultrasonic;
 MessageToArduino Robot;
-// WebServer Web;
 
+int endloop = 0;
 const int squareSize = 22;
-// const int SidesquareSize = 22;
-
+const int matrix_x = 50;
+const int matrix_y = 50;
 byte PositionArray[50][50] = {0};
 
 int left, right, forward;
@@ -18,23 +18,15 @@ int leftMatrixCheck, rightMatrixCheck, forwardMatrixCheck = 0;
 int NextMatrix = 0;
 int x_value = 1, y_value = 24;
 
-#include <math.h>
-const int matrix_x = 50;
-const int matrix_y = 50;
-
-int endloop = 0;
-
 // Declaring the grid and its variations ( grid and Hueristic and dynamic path )
 
 int hueristic[matrix_x][matrix_y];
 
 // Declaring start goal and various other variables
-int startx = x_value;
-int starty = y_value;
 int goalx = 1;
 int goaly = 24;
-int locx = startx;
-int locy = starty;
+int locx = x_value;
+int locy = y_value;
 int locx2;
 int locy2;
 int indexZ;
@@ -436,8 +428,6 @@ int servocontrol() {
       Serial.println(F("mapped everything or stuck"));
       AddBlockToMatrix();
       // AddBlockToMatrix();
-      startx = x_value;
-      starty = y_value;
       heur();
       findpath();
     }
@@ -445,8 +435,6 @@ int servocontrol() {
   } else {
     Serial.println(F("reached max limits"));
     AddBlockToMatrix();
-    startx = x_value;
-    starty = y_value;
     heur();
     findpath();
   }
@@ -479,8 +467,6 @@ void matrixprint() {
 void setup() {
   // put your setup code here, to run once:
   Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
-  // Robot.start();
-  // Web.setup();
   Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
   Serial2.begin(9600, SERIAL_8N1, 16, 0);
   creatematrix();
@@ -492,8 +478,4 @@ void loop() {
   if (endloop == 0) {
     servocontrol();
   }
-  Serial.print("x: ");
-  Serial.print(x_value);
-  Serial.print("y: ");
-  Serial.print(y_value);
 }

@@ -22,6 +22,9 @@
     "algorithm": "cpp",
     "iosfwd": "cpp",
     "streambuf": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "bitset": "cpp",
+    "optional": "cpp",
+    "stdexcept": "cpp"
   }
 }
