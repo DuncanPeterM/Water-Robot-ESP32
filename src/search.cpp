@@ -174,7 +174,7 @@ bool Search::MoveControls(char& x, char& y, int dir) {
 }
 
 bool Search::waterSearch(vector<vector<char> >& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps) {
-  BlockCloseObsticals();
+  BlockCloseObsticals(grid, x, y, dir);
   if (MoveControls(x, y, Search::nextLocation(grid, x, y, previousX, previousY))) {
     backsteps++;
   } else {

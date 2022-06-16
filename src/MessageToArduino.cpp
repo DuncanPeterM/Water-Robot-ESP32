@@ -13,7 +13,7 @@ void MessageToArduino::start() {
 
 void MessageToArduino::Forward() {
   Serial2.print("F\n");
-  delay(4000);
+  delay(2000);
   /*do {
     Message = Serial.readString();
   } while (Message != "Done");*/
@@ -21,32 +21,31 @@ void MessageToArduino::Forward() {
 
 void MessageToArduino::Backwards() {
   Serial2.print("B\n");
-  delay(4000);
+  delay(2000);
 }
 
 void MessageToArduino::Left() {
   Serial2.print("L\n");
-  delay(8000);
+  delay(5000);
 }
 
 void MessageToArduino::Right() {
   Serial2.print("R\n");
-  delay(4000);
+  delay(2000);
 }
 
 void MessageToArduino::TurnLeft() {
   Serial2.println("X\n");
-  delay(4000);
+  delay(5000);
 }
 
 void MessageToArduino::TurnRight() {
   Serial2.println("Y\n");
-  delay(4000);
+  delay(2000);
 }
 
 void MessageToArduino::TurnBack() {
   Serial2.println("Z\n");
-<<<<<<< HEAD
 }
 
 void MessageToArduino::MoveNorth(int dir) {
@@ -95,7 +94,4 @@ void MessageToArduino::MoveWest(int dir) {
     TurnLeft();
     TurnRight();
   }
-=======
-  delay(8000);
->>>>>>> d39d0817381ad3d378ce533194079354c867da72
 }
