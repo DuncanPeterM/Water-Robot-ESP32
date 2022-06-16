@@ -4,7 +4,9 @@
 #include <stack>
 
 #include "Search.h"
+#include "WebServer.h"
 Search Find;
+WebServer Web;
 
 vector<vector<char>> grid(50, vector<char>(50));
 char dir = 0;
@@ -17,11 +19,12 @@ int state = 0;
 void setup() {
   Find.Start();
   Find.setupMatrix(grid);
+  Web.Websetup();
   Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
 }
 
 void loop() {
-  state = 1;
+  state = 2;
   switch (state) {
     case 1:
       if (Find.waterSearch(grid, x_value, y_value, previousX, previousY, dir, backsteps)) {
@@ -41,6 +44,10 @@ void loop() {
       // water found finished manual control
       break;
     case 3:
+      Find.BFSReturn(grid, x_value, y_value, 1, 24);
+      if (x_value == 1 && y_value == 24) {
+        state = 4;
+      }
       // Search finished automatic control home
       break;
     case 4:

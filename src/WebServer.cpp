@@ -1,13 +1,4 @@
-#include <WiFi.h>
-
-#include "Arduino.h"
-#include "esp_camera.h"
-#include "esp_http_server.h"
-#include "esp_timer.h"
-#include "fb_gfx.h"
-#include "img_converters.h"
-#include "soc/rtc_cntl_reg.h"  // disable brownout problems
-#include "soc/soc.h"           // disable brownout problems
+#include "WebServer.h"
 
 // Replace with your network credentials
 const char *ssid = "REPLACE_WITH_YOUR_SSID";
@@ -101,12 +92,14 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
 </html>
 )rawliteral";
 
-static esp_err_t index_handler(httpd_req_t *req) {
+WebServer::WebServer() {}
+
+esp_err_t WebServer::index_handler(httpd_req_t *req) {
   httpd_resp_set_type(req, "text/html");
   return httpd_resp_send(req, (const char *)INDEX_HTML, strlen(INDEX_HTML));
 }
 
-static esp_err_t stream_handler(httpd_req_t *req) {
+esp_err_t WebServer::stream_handler(httpd_req_t *req) {
   camera_fb_t *fb = NULL;
   esp_err_t res = ESP_OK;
   size_t _jpg_buf_len = 0;
@@ -165,7 +158,7 @@ static esp_err_t stream_handler(httpd_req_t *req) {
   return res;
 }
 
-static esp_err_t cmd_handler(httpd_req_t *req) {
+esp_err_t WebServer::cmd_handler(httpd_req_t *req) {
   char *buf;
   size_t buf_len;
   char variable[32] = {
@@ -227,7 +220,7 @@ static esp_err_t cmd_handler(httpd_req_t *req) {
   return httpd_resp_send(req, NULL, 0);
 }
 
-void startCameraServer() {
+void WebServer::startCameraServer() {
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
   config.server_port = 80;
   httpd_uri_t index_uri = {
@@ -257,7 +250,7 @@ void startCameraServer() {
   }
 }
 
-void setup() {
+void WebServer::Websetup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  // disable brownout detector
 
   camera_config_t config;

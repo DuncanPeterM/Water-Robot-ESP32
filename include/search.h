@@ -1,7 +1,9 @@
 #pragma once
 #include <Arduino.h>
+#include <bits/stdc++.h>
 
 #include <Stack>
+using namespace std;
 
 #include "Search.h"
 using namespace std;
@@ -22,4 +24,8 @@ class Search {
   bool MoveControls(char& x, char& y, int dir);
 
   bool waterSearch(vector<vector<char> >& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps);
+
+  bool isValid(int row, int col);
+
+  int BFSReturn(vector<vector<char> >& grid, char& x, char& y, char destX, char destY);
 };

@@ -185,3 +185,67 @@ bool Search::waterSearch(vector<vector<char> >& grid, char& x, char& y, stack<ch
   }
   return true;
 }
+
+#define ROW 50
+#define COL 50
+
+struct Point {
+  int x;
+  int y;
+};
+struct queueNode {
+  Point pt;  // The coordinates of a cell
+  int dist;  // cell's distance of from the source
+};
+
+bool Search::isValid(int row, int col) {
+  // return true if row number and column number
+  // is in range
+  return (row >= 0) && (row < ROW) &&
+         (col >= 0) && (col < COL);
+}
+
+int rowNum[] = {-1, 0, 0, 1};
+int colNum[] = {0, -1, 1, 0};
+
+int Search::BFSReturn(vector<vector<char> >& grid, char& x, char& y, char destX, char destY) {
+  Point src = {x, y};
+  Point dest = {destX, destY};
+  if (!grid[src.x][src.y] == (0 || 1) || !grid[dest.x][dest.y] == (0 || 1)) {
+    return -1;
+  }
+
+  bool visited[ROW][COL];
+  memset(visited, false, sizeof visited);
+
+  visited[x][y] = true;
+
+  queue<queueNode> q;
+
+  queueNode s = {src, 0};
+
+  q.push(s);
+
+  while (!q.empty()) {
+    queueNode curr = q.front();
+    Point pt = curr.pt;
+
+    if (pt.x == dest.x && pt.y == dest.y) {
+      return curr.dist;
+    }
+
+    q.pop();
+
+    for (int i = 0; i < 4; i++) {
+      int row = pt.x + rowNum[i];
+      int col = pt.y + colNum[i];
+
+      if (isValid(row, col) && !visited[row][col] && grid[row][col] == 0) {
+        visited[row][col] = true;
+        queueNode n = {Point{row, col}, curr.dist + 1};
+        q.push(n);
+      }
+    }
+    return -1;
+  }
+}
