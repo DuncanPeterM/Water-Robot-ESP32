@@ -3,7 +3,7 @@
 
 class MessageToArduino {
  private:
-  public:
+ public:
   MessageToArduino();
 
   void start();
@@ -21,4 +21,12 @@ class MessageToArduino {
   void TurnRight();
 
   void TurnBack();
+
+  void MoveNorth(int dir);
+
+  void MoveSouth(int dir);
+
+  void MoveEast(int dir);
+
+  void MoveWest(int dir);
 };

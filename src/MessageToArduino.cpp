@@ -46,5 +46,52 @@ void MessageToArduino::TurnRight() {
 
 void MessageToArduino::TurnBack() {
   Serial2.println("Z\n");
-  delay(4000);
+}
+
+void MessageToArduino::MoveNorth(int dir) {
+  if (dir = 1) {
+    TurnLeft();
+  } else if (dir = 2) {
+    TurnLeft();
+    TurnLeft();
+  } else if (dir = 3) {
+    TurnRight();
+  }
+  Forward();
+}
+
+void MessageToArduino::MoveSouth(int dir) {
+  if (dir = 0) {
+    TurnRight();
+    TurnRight();
+  } else if (dir = 1) {
+    TurnRight();
+  } else if (dir = 3) {
+    TurnLeft();
+  }
+  Forward();
+}
+
+void MessageToArduino::MoveEast(int dir) {
+  if (dir = 0) {
+    TurnRight();
+  } else if (dir = 2) {
+    TurnLeft();
+  } else if (dir = 2) {
+    TurnRight();
+    TurnRight();
+  }
+  Forward();
+}
+
+void MessageToArduino::MoveWest(int dir) {
+  if (dir = 0) {
+    TurnLeft();
+  } else if (dir = 1) {
+    TurnRight();
+    TurnRight();
+  } else if (dir = 2) {
+    TurnLeft();
+    TurnRight();
+  }
 }

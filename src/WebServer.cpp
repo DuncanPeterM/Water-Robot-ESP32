@@ -1,6 +1,3 @@
-
-#include "WebServer.h"
-
 #include <WiFi.h>
 
 #include "Arduino.h"
@@ -13,75 +10,14 @@
 #include "soc/soc.h"           // disable brownout problems
 
 // Replace with your network credentials
-const char *ssid = "ROG_PhoneII_4917";
-const char *password = "apple123";
+const char *ssid = "REPLACE_WITH_YOUR_SSID";
+const char *password = "REPLACE_WITH_YOUR_PASSWORD";
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
 #define CAMERA_MODEL_AI_THINKER
-//#define CAMERA_MODEL_M5STACK_PSRAM
-//#define CAMERA_MODEL_M5STACK_WITHOUT_PSRAM
-//#define CAMERA_MODEL_M5STACK_PSRAM_B
-//#define CAMERA_MODEL_WROVER_KIT
 
-#if defined(CAMERA_MODEL_WROVER_KIT)
-#define PWDN_GPIO_NUM -1
-#define RESET_GPIO_NUM -1
-#define XCLK_GPIO_NUM 21
-#define SIOD_GPIO_NUM 26
-#define SIOC_GPIO_NUM 27
-
-#define Y9_GPIO_NUM 35
-#define Y8_GPIO_NUM 34
-#define Y7_GPIO_NUM 39
-#define Y6_GPIO_NUM 36
-#define Y5_GPIO_NUM 19
-#define Y4_GPIO_NUM 18
-#define Y3_GPIO_NUM 5
-#define Y2_GPIO_NUM 4
-#define VSYNC_GPIO_NUM 25
-#define HREF_GPIO_NUM 23
-#define PCLK_GPIO_NUM 22
-
-#elif defined(CAMERA_MODEL_M5STACK_PSRAM)
-#define PWDN_GPIO_NUM -1
-#define RESET_GPIO_NUM 15
-#define XCLK_GPIO_NUM 27
-#define SIOD_GPIO_NUM 25
-#define SIOC_GPIO_NUM 23
-
-#define Y9_GPIO_NUM 19
-#define Y8_GPIO_NUM 36
-#define Y7_GPIO_NUM 18
-#define Y6_GPIO_NUM 39
-#define Y5_GPIO_NUM 5
-#define Y4_GPIO_NUM 34
-#define Y3_GPIO_NUM 35
-#define Y2_GPIO_NUM 32
-#define VSYNC_GPIO_NUM 22
-#define HREF_GPIO_NUM 26
-#define PCLK_GPIO_NUM 21
-
-#elif defined(CAMERA_MODEL_M5STACK_WITHOUT_PSRAM)
-#define PWDN_GPIO_NUM -1
-#define RESET_GPIO_NUM 15
-#define XCLK_GPIO_NUM 27
-#define SIOD_GPIO_NUM 25
-#define SIOC_GPIO_NUM 23
-
-#define Y9_GPIO_NUM 19
-#define Y8_GPIO_NUM 36
-#define Y7_GPIO_NUM 18
-#define Y6_GPIO_NUM 39
-#define Y5_GPIO_NUM 5
-#define Y4_GPIO_NUM 34
-#define Y3_GPIO_NUM 35
-#define Y2_GPIO_NUM 17
-#define VSYNC_GPIO_NUM 22
-#define HREF_GPIO_NUM 26
-#define PCLK_GPIO_NUM 21
-
-#elif defined(CAMERA_MODEL_AI_THINKER)
+#if defined(CAMERA_MODEL_AI_THINKER)
 #define PWDN_GPIO_NUM 32
 #define RESET_GPIO_NUM -1
 #define XCLK_GPIO_NUM 0
@@ -100,33 +36,9 @@ const char *password = "apple123";
 #define HREF_GPIO_NUM 23
 #define PCLK_GPIO_NUM 22
 
-#elif defined(CAMERA_MODEL_M5STACK_PSRAM_B)
-#define PWDN_GPIO_NUM -1
-#define RESET_GPIO_NUM 15
-#define XCLK_GPIO_NUM 27
-#define SIOD_GPIO_NUM 22
-#define SIOC_GPIO_NUM 23
-
-#define Y9_GPIO_NUM 19
-#define Y8_GPIO_NUM 36
-#define Y7_GPIO_NUM 18
-#define Y6_GPIO_NUM 39
-#define Y5_GPIO_NUM 5
-#define Y4_GPIO_NUM 34
-#define Y3_GPIO_NUM 35
-#define Y2_GPIO_NUM 32
-#define VSYNC_GPIO_NUM 25
-#define HREF_GPIO_NUM 26
-#define PCLK_GPIO_NUM 21
-
 #else
 #error "Camera model not selected"
 #endif
-
-#define MOTOR_1_PIN_1 14
-#define MOTOR_1_PIN_2 15
-#define MOTOR_2_PIN_1 13
-#define MOTOR_2_PIN_2 12
 
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
@@ -290,34 +202,19 @@ static esp_err_t cmd_handler(httpd_req_t *req) {
 
   if (!strcmp(variable, "forward")) {
     Serial.println("Forward");
-    digitalWrite(MOTOR_1_PIN_1, 1);
-    digitalWrite(MOTOR_1_PIN_2, 0);
-    digitalWrite(MOTOR_2_PIN_1, 1);
-    digitalWrite(MOTOR_2_PIN_2, 0);
+
   } else if (!strcmp(variable, "left")) {
     Serial.println("Left");
-    digitalWrite(MOTOR_1_PIN_1, 0);
-    digitalWrite(MOTOR_1_PIN_2, 1);
-    digitalWrite(MOTOR_2_PIN_1, 1);
-    digitalWrite(MOTOR_2_PIN_2, 0);
+
   } else if (!strcmp(variable, "right")) {
     Serial.println("Right");
-    digitalWrite(MOTOR_1_PIN_1, 1);
-    digitalWrite(MOTOR_1_PIN_2, 0);
-    digitalWrite(MOTOR_2_PIN_1, 0);
-    digitalWrite(MOTOR_2_PIN_2, 1);
+
   } else if (!strcmp(variable, "backward")) {
     Serial.println("Backward");
-    digitalWrite(MOTOR_1_PIN_1, 0);
-    digitalWrite(MOTOR_1_PIN_2, 1);
-    digitalWrite(MOTOR_2_PIN_1, 0);
-    digitalWrite(MOTOR_2_PIN_2, 1);
+
   } else if (!strcmp(variable, "stop")) {
     Serial.println("Stop");
-    digitalWrite(MOTOR_1_PIN_1, 0);
-    digitalWrite(MOTOR_1_PIN_2, 0);
-    digitalWrite(MOTOR_2_PIN_1, 0);
-    digitalWrite(MOTOR_2_PIN_2, 0);
+
   } else {
     res = -1;
   }
@@ -330,7 +227,7 @@ static esp_err_t cmd_handler(httpd_req_t *req) {
   return httpd_resp_send(req, NULL, 0);
 }
 
-void WebServer::startCameraServer() {
+void startCameraServer() {
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
   config.server_port = 80;
   httpd_uri_t index_uri = {
@@ -359,18 +256,9 @@ void WebServer::startCameraServer() {
     httpd_register_uri_handler(stream_httpd, &stream_uri);
   }
 }
-WebServer::WebServer() {}
 
-void WebServer::setup() {
+void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  // disable brownout detector
-
-  pinMode(MOTOR_1_PIN_1, OUTPUT);
-  pinMode(MOTOR_1_PIN_2, OUTPUT);
-  pinMode(MOTOR_2_PIN_1, OUTPUT);
-  pinMode(MOTOR_2_PIN_2, OUTPUT);
-
-  Serial.begin(115200);
-  Serial.setDebugOutput(false);
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;

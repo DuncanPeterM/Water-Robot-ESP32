@@ -25,16 +25,19 @@ void Distance::LookAngle(int angle) {
 }
 
 int Distance::GetDistance() {
-  long duration;
+  int duration;
 
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  Serial.println(duration * 0.034 / 2);
-  return duration * 0.034 / 2;
+  duration = pulseIn(echoPin, HIGH) * 0.034 / 2;
+  Serial.println(duration);
+  if (duration < 1.5) {
+    GetDistance();
+  }
+  return duration;
 }
 
 int Distance::ScanLeft() {
