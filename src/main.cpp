@@ -16,6 +16,8 @@ stack<char> previousX;
 stack<char> previousY;
 int state = 0;
 
+vector<Node> path;
+
 void setup() {
   Find.Start();
   Find.setupMatrix(grid);
@@ -44,9 +46,12 @@ void loop() {
       // water found finished manual control
       break;
     case 3:
-      Find.BFSReturn(grid, x_value, y_value, 1, 24);
+      Find.BlockCloseObsticals(grid, x_value, y_value, dir);
       if (x_value == 1 && y_value == 24) {
         state = 4;
+      } else {
+        Node current = make_pair(x_value, y_value);
+        Find.BFSReturn(grid, path, current);
       }
       // Search finished automatic control home
       break;

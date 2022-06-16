@@ -25,6 +25,7 @@
     "utility": "cpp",
     "bitset": "cpp",
     "optional": "cpp",
-    "stdexcept": "cpp"
+    "stdexcept": "cpp",
+    "stack": "cpp"
   }
 }

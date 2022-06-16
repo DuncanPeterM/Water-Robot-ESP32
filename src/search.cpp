@@ -14,7 +14,7 @@ void Search::Start() {
   Serial2.begin(9600, SERIAL_8N1, 16, 0);
 }
 
-void Search::setupMatrix(vector<vector<char> >& grid) {
+void Search::setupMatrix(vector<vector<char>>& grid) {
   for (char i = 0; i < 50; i++) {
     for (char j = 0; j < 50; j++) {
       grid[i][j] = 0;
@@ -30,7 +30,7 @@ void Search::setupMatrix(vector<vector<char> >& grid) {
   Serial.println("Set Borders to 2");
 }
 
-int Search::nextLocation(vector<vector<char> >& grid, int x, int y, stack<char>& previousX, stack<char>& previousY) {
+int Search::nextLocation(vector<vector<char>>& grid, int x, int y, stack<char>& previousX, stack<char>& previousY) {
   if (grid[x + 1][y] == 0) {
     Serial.println("Stack Go Right");
     grid[x + 1][y] = 1;
@@ -82,37 +82,37 @@ int Search::nextLocation(vector<vector<char> >& grid, int x, int y, stack<char>&
   }
 }
 
-void Search::BlockCloseObsticals(vector<vector<char> >& grid, char& x_value, char& y_value, char& dir) {
+void Search::BlockCloseObsticals(vector<vector<char>>& grid, char& x_value, char& y_value, char& dir) {
   if (Ultrasonic.ScanLeft() < 22) {
-    if (dir = 0) {
+    if (dir == 0) {
       grid[x_value - 1][y_value] = 2;
-    } else if (dir = 1) {
+    } else if (dir == 1) {
       grid[x_value][y_value - 1] = 2;
-    } else if (dir = 2) {
+    } else if (dir == 2) {
       grid[x_value + 1][y_value] = 2;
-    } else if (dir = 3) {
+    } else if (dir == 3) {
       grid[x_value][y_value - 1] = 2;
     }
   }
   if (Ultrasonic.ScanFoward() < 22) {
     if (dir = 0) {
       grid[x_value][y_value + 1] = 2;
-    } else if (dir = 1) {
+    } else if (dir == 1) {
       grid[x_value + 1][y_value] = 2;
-    } else if (dir = 2) {
+    } else if (dir == 2) {
       grid[x_value][y_value - 1] = 2;
-    } else if (dir = 3) {
+    } else if (dir == 3) {
       grid[x_value - 1][y_value] = 2;
     }
   }
   if (Ultrasonic.ScanRight() < 22) {
     if (dir = 0) {
       grid[x_value + 1][y_value] = 2;
-    } else if (dir = 1) {
+    } else if (dir == 1) {
       grid[x_value][y_value - 1] = 2;
-    } else if (dir = 2) {
+    } else if (dir == 2) {
       grid[x_value - 1][y_value] = 2;
-    } else if (dir = 3) {
+    } else if (dir == 3) {
       grid[x_value][y_value + 1] = 2;
     }
   }
@@ -173,7 +173,7 @@ bool Search::MoveControls(char& x, char& y, int dir) {
   }
 }
 
-bool Search::waterSearch(vector<vector<char> >& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps) {
+bool Search::waterSearch(vector<vector<char>>& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps) {
   BlockCloseObsticals(grid, x, y, dir);
   if (MoveControls(x, y, Search::nextLocation(grid, x, y, previousX, previousY))) {
     backsteps++;
@@ -186,66 +186,56 @@ bool Search::waterSearch(vector<vector<char> >& grid, char& x, char& y, stack<ch
   return true;
 }
 
-#define ROW 50
-#define COL 50
+int row[] = {-1, 0, 0, 1};
+int col[] = {0, -1, 1, 0};
 
-struct Point {
-  int x;
-  int y;
-};
-struct queueNode {
-  Point pt;  // The coordinates of a cell
-  int dist;  // cell's distance of from the source
-};
-
-bool Search::isValid(int row, int col) {
-  // return true if row number and column number
-  // is in range
-  return (row >= 0) && (row < ROW) &&
-         (col >= 0) && (col < COL);
+bool Search::isValid(vector<Node> const& path, Node pt, int N) {
+  return (pt.first >= 0) && (pt.first < N) &&
+         (pt.second >= 0) && (pt.second < N) &&
+         (find(path.begin(), path.end(), pt) == path.end());
 }
 
 int rowNum[] = {-1, 0, 0, 1};
 int colNum[] = {0, -1, 1, 0};
 
-int Search::BFSReturn(vector<vector<char> >& grid, char& x, char& y, char destX, char destY) {
-  Point src = {x, y};
-  Point dest = {destX, destY};
-  if (!grid[src.x][src.y] == (0 || 1) || !grid[dest.x][dest.y] == (0 || 1)) {
-    return -1;
+bool Search::BFSReturn(vector<vector<char>> const& mat, vector<Node>& path, Node& curr) {
+  // base case
+  if (mat.size() == 0) {
+    return false;
   }
 
-  bool visited[ROW][COL];
-  memset(visited, false, sizeof visited);
+  // include the current cell in the path
+  path.push_back(curr);
 
-  visited[x][y] = true;
+  // `N × N` matrix
+  int N = mat.size();
 
-  queue<queueNode> q;
-
-  queueNode s = {src, 0};
-
-  q.push(s);
-
-  while (!q.empty()) {
-    queueNode curr = q.front();
-    Point pt = curr.pt;
-
-    if (pt.x == dest.x && pt.y == dest.y) {
-      return curr.dist;
-    }
-
-    q.pop();
-
-    for (int i = 0; i < 4; i++) {
-      int row = pt.x + rowNum[i];
-      int col = pt.y + colNum[i];
-
-      if (isValid(row, col) && !visited[row][col] && grid[row][col] == 0) {
-        visited[row][col] = true;
-        queueNode n = {Point{row, col}, curr.dist + 1};
-        q.push(n);
-      }
-    }
-    return -1;
+  // if the destination is found, return true
+  if (curr.first == N - 1 && curr.second == N - 1) {
+    return true;
   }
+
+  // get the value of the current cell
+  int n = mat[curr.first][curr.second];
+
+  // check all four possible movements from the current cell
+  // and recur for each valid movement
+  for (int i = 0; i < 4; i++) {
+    // get the next position using the value of the current cell
+    int x = curr.first + row[i] * n;
+    int y = curr.second + col[i] * n;
+
+    Node next = make_pair(x, y);
+
+    // check if it is possible to go to a position (x, y)
+    // from the current position
+    if (isValid(path, next, N) && BFSReturn(mat, path, next)) {
+      return true;
+    }
+  }
+
+  // backtrack: exclude the current cell from the path
+  path.pop_back();
+
+  return false;
 }
