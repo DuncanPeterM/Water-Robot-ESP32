@@ -30,8 +30,6 @@ void setup() {
 }
 
 void loop() {
-  // state = 1;
-  Node current = make_pair(12, 12);
   switch (state) {
     case 1:
       Serial.println("Entering State 1");
@@ -53,20 +51,20 @@ void loop() {
       Serial.println("Entering State 2");
       Web.Websetup();
       // water found finished manual control
-      state = 4;
+      state = 3;
       break;
     case 3:
       Serial.println("Entering State 3");
-      Find.BlockCloseObsticals(grid, x_value, y_value, dir);
-      if (x_value == 1 && y_value == 24) {
-        state = 4;
-      } else {
-        //  command to move to new location to go here
-      }
+      // wait state till told to go from web interface
       break;
     case 4:
       Serial.println("Entering State 4");
-      //  Search finished automatic control water
+      if (x_value == 1 && y_value == 24) {
+        state = 5;
+      } else {
+        Find.BlockCloseObsticals(grid, x_value, y_value, dir);
+        //  command to move to new location to go here
+      }
       break;
     default:
       break;
