@@ -26,7 +26,7 @@ class Search {
 
   bool waterSearch(vector<vector<char>>& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps);
 
-  bool isValid(vector<Node> const& path, Node pt, int N);
+  bool isValid(bool vis[][50], int row, int col);
 
-  bool BFSReturn(vector<vector<char>> const& mat, vector<Node>& path, Node& curr);
+  bool BFSReturn(vector<vector<char>>& grid, Node& path, Node& curr, bool vis[][50]);
 };

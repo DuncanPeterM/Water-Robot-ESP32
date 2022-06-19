@@ -1,8 +1,10 @@
 #include "WebServer.h"
 
+#include "MessageToArduino.h"
+MessageToArduino RobotMove;
 // Replace with your network credentials
-const char *ssid = "REPLACE_WITH_YOUR_SSID";
-const char *password = "REPLACE_WITH_YOUR_PASSWORD";
+const char *ssid = "wlan-ap-2.4g";
+const char *password = "alan&fionamackay2010";
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
@@ -76,9 +78,11 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
     <h1>ESP32-CAM Robot</h1>
     <img src="" id="photo" >
     <table>
-      <tr><td colspan="3" align="center"><button class="button" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">Forward</button></td></tr>
-      <tr><td align="center"><button class="button" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">Left</button></td><td align="center"><button class="button" onmousedown="toggleCheckbox('stop');" ontouchstart="toggleCheckbox('stop');">Stop</button></td><td align="center"><button class="button" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">Right</button></td></tr>
-      <tr><td colspan="3" align="center"><button class="button" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">Backward</button></td></tr>                   
+      <tr><td colspan="3" align="center"><button class="button" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');" >Forward</button></td></tr>
+      <tr><td align="center"><button class="button" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');"  >Left</button></td>
+      <td align="center"><button class="button" onmousedown="toggleCheckbox('stop');" ontouchstart="toggleCheckbox('stop');">Stop</button></td>
+      <td align="center"><button class="button" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');"  >Right</button></td></tr>
+      <tr><td colspan="3" align="center"><button class="button" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');" >Backward</button></td></tr>                 
     </table>
    <script>
    function toggleCheckbox(x) {
@@ -195,16 +199,16 @@ esp_err_t WebServer::cmd_handler(httpd_req_t *req) {
 
   if (!strcmp(variable, "forward")) {
     Serial.println("Forward");
-
+    RobotMove.Forward();
   } else if (!strcmp(variable, "left")) {
     Serial.println("Left");
-
+    RobotMove.Left();
   } else if (!strcmp(variable, "right")) {
     Serial.println("Right");
-
+    RobotMove.Right();
   } else if (!strcmp(variable, "backward")) {
     Serial.println("Backward");
-
+    RobotMove.Backwards();
   } else if (!strcmp(variable, "stop")) {
     Serial.println("Stop");
 
@@ -250,7 +254,7 @@ void WebServer::startCameraServer() {
   }
 }
 
-void WebServer::Websetup() {
+bool WebServer::Websetup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  // disable brownout detector
 
   camera_config_t config;
@@ -289,7 +293,7 @@ void WebServer::Websetup() {
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
     Serial.printf("Camera init failed with error 0x%x", err);
-    return;
+    return false;
   }
   // Wi-Fi connection
   WiFi.begin(ssid, password);

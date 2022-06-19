@@ -11,7 +11,9 @@ Search::Search() {
 
 void Search::Start() {
   Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
+  Serial.println("Ultrasonic Start");
   Serial2.begin(9600, SERIAL_8N1, 16, 0);
+  Serial2.println("Serial2 (motor driver) Start");
 }
 
 void Search::setupMatrix(vector<vector<char>>& grid) {
@@ -22,10 +24,10 @@ void Search::setupMatrix(vector<vector<char>>& grid) {
     Serial.println("Set all to 0");
   }
   for (char i = 0; i < 50; i++) {
-    grid[i][0] = 1;
-    grid[i][49] = 1;
-    grid[0][i] = 1;
-    grid[49][i] = 1;
+    grid[i][0] = 2;
+    grid[i][24] = 2;
+    grid[0][i] = 2;
+    grid[49][i] = 2;
   }
   Serial.println("Set Borders to 2");
 }
@@ -95,7 +97,7 @@ void Search::BlockCloseObsticals(vector<vector<char>>& grid, char& x_value, char
     }
   }
   if (Ultrasonic.ScanFoward() < 22) {
-    if (dir = 0) {
+    if (dir == 0) {
       grid[x_value][y_value + 1] = 2;
     } else if (dir == 1) {
       grid[x_value + 1][y_value] = 2;
@@ -106,7 +108,7 @@ void Search::BlockCloseObsticals(vector<vector<char>>& grid, char& x_value, char
     }
   }
   if (Ultrasonic.ScanRight() < 22) {
-    if (dir = 0) {
+    if (dir == 0) {
       grid[x_value + 1][y_value] = 2;
     } else if (dir == 1) {
       grid[x_value][y_value - 1] = 2;
@@ -171,6 +173,7 @@ bool Search::MoveControls(char& x, char& y, int dir) {
     default:
       break;
   }
+  return -1;
 }
 
 bool Search::waterSearch(vector<vector<char>>& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps) {
@@ -183,59 +186,49 @@ bool Search::waterSearch(vector<vector<char>>& grid, char& x, char& y, stack<cha
   if (backsteps >= 5) {  // if backstep 5 times finish searching
     return false;
   }
+  if (Ultrasonic.WaterSensor() > 20) {
+    return false;
+  }
   return true;
 }
 
-int row[] = {-1, 0, 0, 1};
-int col[] = {0, -1, 1, 0};
+#include <list>
+#include <queue>
 
-bool Search::isValid(vector<Node> const& path, Node pt, int N) {
-  return (pt.first >= 0) && (pt.first < N) &&
-         (pt.second >= 0) && (pt.second < N) &&
-         (find(path.begin(), path.end(), pt) == path.end());
+int dRow[] = {-1, 0, 1, 0};
+int dCol[] = {0, 1, 0, -1};
+
+bool isValid(bool vis[][50], int row, int col) {
+  if (row < 0 || col < 0 || row >= 50 || col >= 50)
+    return false;
+  // If cell is already visited
+  if (vis[row][col])
+    return false;
+  // Otherwise
+  return true;
 }
 
-int rowNum[] = {-1, 0, 0, 1};
-int colNum[] = {0, -1, 1, 0};
+bool Search::BFSReturn(vector<vector<char>>& grid, Node& path, Node& curr, bool vis[][50]) {
+  queue<Node> q;
 
-bool Search::BFSReturn(vector<vector<char>> const& mat, vector<Node>& path, Node& curr) {
-  // base case
-  if (mat.size() == 0) {
-    return false;
-  }
+  q.push(curr);
+  vis[curr.first][curr.second] = true;
 
-  // include the current cell in the path
-  path.push_back(curr);
+  while (!q.empty()) {
+    pair<int, int> cell = q.front();
+    int x = cell.first;
+    int y = cell.second;
 
-  // `N × N` matrix
-  int N = mat.size();
-
-  // if the destination is found, return true
-  if (curr.first == N - 1 && curr.second == N - 1) {
-    return true;
-  }
-
-  // get the value of the current cell
-  int n = mat[curr.first][curr.second];
-
-  // check all four possible movements from the current cell
-  // and recur for each valid movement
-  for (int i = 0; i < 4; i++) {
-    // get the next position using the value of the current cell
-    int x = curr.first + row[i] * n;
-    int y = curr.second + col[i] * n;
-
-    Node next = make_pair(x, y);
-
-    // check if it is possible to go to a position (x, y)
-    // from the current position
-    if (isValid(path, next, N) && BFSReturn(mat, path, next)) {
-      return true;
+    q.pop();
+    for (int i = 0; i < 4; i++) {
+      int newX = x + dRow[i];
+      int newY = y + dCol[i];
+      if (isValid(vis, newX, newY) && grid[newX][newY] == 0) {
+        vis[newX][newY] = true;
+        path.first = newX;
+        path.second = newY;
+        vis[newX][newY] = true;
+      }
     }
   }
-
-  // backtrack: exclude the current cell from the path
-  path.pop_back();
-
-  return false;
 }

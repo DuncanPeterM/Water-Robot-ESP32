@@ -17,4 +17,6 @@ class Distance {
   int ScanRight();
 
   int ScanFoward();
+
+  int WaterSensor();
 };

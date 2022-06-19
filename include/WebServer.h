@@ -21,5 +21,5 @@ class WebServer {
  public:
   WebServer();
 
-  void Websetup();
+  bool Websetup();
 };

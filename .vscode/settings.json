@@ -26,6 +26,7 @@
     "bitset": "cpp",
     "optional": "cpp",
     "stdexcept": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "iterator": "cpp"
   }
 }
