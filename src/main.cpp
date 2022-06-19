@@ -23,9 +23,7 @@ void setup() {
   Serial.println("Find Setup");
   Find.setupMatrix(grid);
   Serial.println("Find Setup Matrix");
-  // Web.Websetup();
-  Serial.println("Web Setup");
-
+  pinMode(4, OUTPUT);
   Serial.println("Serial Setup");
 }
 
@@ -49,6 +47,7 @@ void loop() {
       break;
     case 2:
       Serial.println("Entering State 2");
+      digitalWrite(4, HIGH);
       Web.Websetup();
       // water found finished manual control
       state = 3;
