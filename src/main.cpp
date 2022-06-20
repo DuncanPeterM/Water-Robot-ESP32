@@ -62,6 +62,8 @@ void loop() {
         state = 5;
       } else {
         Find.BlockCloseObsticals(grid, x_value, y_value, dir);
+        char NextX = 0, NextY = 0;
+        Find.GoToNext(x_value, y_value, NextX, NextY, dir);
         //  command to move to new location to go here
       }
       break;
