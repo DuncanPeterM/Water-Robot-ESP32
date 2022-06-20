@@ -120,6 +120,18 @@ void Search::BlockCloseObsticals(vector<vector<char>>& grid, char& x_value, char
   }
 }
 
+void Search::ManualControl(int button) {
+  if (button == 1) {
+    Robot.Forward();
+  } else if (button == 2) {
+    Robot.Backwards();
+  } else if (button == 3) {
+    Robot.TurnLeft();
+  } else if (button == 4) {
+    Robot.TurnRight();
+  }
+}
+
 void Search::GoToNext(char& x, char& y, char& nextX, char& nextY, char dir) {
   if (nextX - x == 1) {
     Robot.MoveEast(dir);

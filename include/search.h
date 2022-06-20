@@ -24,6 +24,8 @@ class Search {
 
   void GoToNext(char& x, char& y, char& nextX, char& nextY, char dir);
 
+  void ManualControl(int button);
+
   bool MoveControls(char& x, char& y, int dir);
 
   bool waterSearch(vector<vector<char>>& grid, char& x, char& y, stack<char>& previousX, stack<char>& previousY, char& dir, char& backsteps);

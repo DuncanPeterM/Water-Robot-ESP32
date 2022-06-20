@@ -36,13 +36,13 @@ void loop() {
         Serial.print(x_value);
         Serial.print(" ");
         Serial.print(y_value);
-        state = 2;  // remote later
+        // state = 2;  // remote later
       } else {
         Serial.println(F("Finished Search (All areas searched or water found)"));
         Serial.print(x_value);
         Serial.print(" ");
         Serial.print(y_value);
-        state = 2;
+        // state = 2;
       }
       break;
     case 2:
@@ -53,8 +53,8 @@ void loop() {
       state = 3;
       break;
     case 3:
-      Serial.println("Entering State 3");
-      // wait state till told to go from web interface
+      // Serial.println("Entering State 3");
+      //  wait state till told to go from web interface
       break;
     case 4:
       Serial.println("Entering State 4");

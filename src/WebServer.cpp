@@ -3,8 +3,8 @@
 #include "MessageToArduino.h"
 MessageToArduino RobotMove;
 // Replace with your network credentials
-const char *ssid = "wlan-ap-2.4g";
-const char *password = "alan&fionamackay2010";
+const char *ssid = "ROGPhone";
+const char *password = "apple123";
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
@@ -199,18 +199,13 @@ esp_err_t WebServer::cmd_handler(httpd_req_t *req) {
 
   if (!strcmp(variable, "forward")) {
     Serial.println("Forward");
-    RobotMove.Forward();
   } else if (!strcmp(variable, "left")) {
     Serial.println("Left");
-    RobotMove.Left();
   } else if (!strcmp(variable, "right")) {
     Serial.println("Right");
-    RobotMove.Right();
   } else if (!strcmp(variable, "backward")) {
     Serial.println("Backward");
-    RobotMove.Backwards();
   } else if (!strcmp(variable, "stop")) {
-    Serial.println("Stop");
 
   } else {
     res = -1;
