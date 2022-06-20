@@ -58,7 +58,7 @@ void loop() {
       break;
     case 4:
       Serial.println("Entering State 4");
-      if (x_value == 1 && y_value == 24) {
+      if (x_value == 24 && y_value == 1) {
         state = 5;
       } else {
         Find.BlockCloseObsticals(grid, x_value, y_value, dir);

@@ -192,43 +192,158 @@ bool Search::waterSearch(vector<vector<char>>& grid, char& x, char& y, stack<cha
   return true;
 }
 
-#include <list>
-#include <queue>
-
-int dRow[] = {-1, 0, 1, 0};
-int dCol[] = {0, 1, 0, -1};
-
-bool isValid(bool vis[][50], int row, int col) {
-  if (row < 0 || col < 0 || row >= 50 || col >= 50)
-    return false;
-  // If cell is already visited
-  if (vis[row][col])
-    return false;
-  // Otherwise
-  return true;
+bool Search::BFSReturn(vector<vector<char>>& grid, Node& path, Node& curr, bool vis[][50]) {
+ 
 }
 
-bool Search::BFSReturn(vector<vector<char>>& grid, Node& path, Node& curr, bool vis[][50]) {
-  queue<Node> q;
 
-  q.push(curr);
-  vis[curr.first][curr.second] = true;
 
-  while (!q.empty()) {
-    pair<int, int> cell = q.front();
-    int x = cell.first;
-    int y = cell.second;
+/*
+void findpath() {
+  turnDirection('B');
+  locx = x_value;
+  locy = y_value;
+  /*Serial.println("hereeeeeee");
+   Serial.println(locx);
+    Serial.println(locy);
+     Serial.println(goalx);
+      Serial.println(goaly);
 
-    q.pop();
-    for (int i = 0; i < 4; i++) {
-      int newX = x + dRow[i];
-      int newY = y + dCol[i];
-      if (isValid(vis, newX, newY) && grid[newX][newY] == 0) {
-        vis[newX][newY] = true;
-        path.first = newX;
-        path.second = newY;
-        vis[newX][newY] = true;
+  while (locx != goalx || locy != goaly) {
+    if (locx <= matrix_x && locy <= matrix_y) {
+      if (locx - 1 >= 0 && locy >= 0) {
+        if (PositionArray[locx - 1][locy] == 1) {
+          costarray[0] = g + hueristic[locx - 1][locy];
+          // Serial.println("found 0 ");
+        } else {
+          costarray[0] = 400;
+        }
+      } else {
+        costarray[0] = 400;
+      }
+      if (locx >= 0 && locy + 1 >= 0) {
+        if (PositionArray[locx][locy + 1] == 1) {
+          costarray[1] = g + hueristic[locx][locy + 1];
+          // Serial.println("found 1 ");
+        } else {
+          costarray[1] = 400;
+        }
+      } else {
+        costarray[1] = 400;
+      }
+      if (locx + 1 >= 0 && locy >= 0) {
+        if (PositionArray[locx + 1][locy] == 1) {
+          costarray[2] = g + hueristic[locx + 1][locy];
+          // Serial.println("found 2 ");
+        } else {
+          costarray[2] = 400;
+        }
+      } else {
+        costarray[2] = 400;
+      }
+      if (locx >= 0 && locy - 1 >= 0) {
+        if (PositionArray[locx][locy - 1] == 1) {
+          costarray[3] = g + hueristic[locx][locy - 1];
+          // Serial.println("found 3 ");
+        } else {
+          costarray[3] = 400;
+        }
+      } else {
+        costarray[3] = 400;
+      }
+      //----------------------------------------------------------------------------------------------------------------------
+      minV = costarray[0];
+      indexZ = 0;
+      // Finding node with least cost
+      for (int i = 0; i < 4; i++) {
+        if (costarray[i] <= minV) {
+          indexZ = i;
+          minV = costarray[i];
+        }
+      }
+      //----------------------------
+
+      // PositionArray[locx][locy]=1;
+      // move your position to the new location
+      if (indexZ == 0) {
+        locx = locx - 1;
+
+      } else if (indexZ == 1) {
+        locy = locy + 1;
+      } else if (indexZ == 2) {
+        locx = locx + 1;
+      } else if (indexZ == 3) {
+        locy = locy - 1;
+      }
+
+      /* Serial.print("(");
+       Serial.print(locx);
+       Serial.print(",");
+       Serial.print(locy);
+       Serial.print(")");
+       Serial.println();*/
+
+      // Serial.println(PositionArray[2][0]);
+      abs_x = locx - locx2;
+      abs_y = locy - locy2;
+      locy2 = locy;
+      locx2 = locx;
+      Serial.print("(");
+      Serial.print(abs_x);
+      Serial.print(",");
+      Serial.print(abs_y);
+      Serial.print(")");
+      Serial.println();
+      if (abs_x == 1) {
+        Serial.println("    go back 1 step");
+      }
+
+      if (abs_x == -1) {
+        Serial.println("    go forward 1 step");
+        Robot.Forward();
+      } else if (abs_y == 1) {
+        turnDirection('R');
+        Robot.Forward();
+        turnDirection('L');
+        Serial.println("    go right 1 step");
+      } else if (abs_y == -1) {
+        Serial.println("    go left 1 step");
+        turnDirection('L');
+        Robot.Forward();
+        turnDirection('R');
+      }
+
+      if (locx == goalx && locy == goaly) {
+        Serial.println("target found  ");
+        // for(;;);
       }
     }
   }
+  endloop = 1;
 }
+
+void heur() {
+  if ((goaly < matrix_y && goalx < matrix_x) || (goalx > -1 && goaly > -1)) {
+    for (int i = 0; i < matrix_y; i++) {
+      for (int j = 0; j < matrix_x; j++)
+
+        if (PositionArray[j][i] == 1) {
+          hueristic[j][i] = (abs(j - goalx) + abs(i - goaly));
+
+        } else {
+          hueristic[j][i] = (abs(j - goalx) + abs(i - goaly)) + 500;
+        }
+    }
+  }
+  //------------------------------------------------// Uncomment Region to view the hueristic PositionArray
+  for (int i = 0; i < matrix_x; i++) {
+    for (int j = 0; j < matrix_y; j++) {
+      // Serial.print(hueristic[i][j]);
+      // Serial.print("  ");
+    }
+    // Serial.println();
+  }
+  // for(;;);
+  //------------------------------------------------
+}
+*/
