@@ -369,8 +369,8 @@ void heur() {
   //------------------------------------------------
 }
 
-const char *ssid = "wlan-ap-2.4g";
-const char *password = "alan&fionamackay2010";
+const char *ssid = "ROGPhone";
+const char *password = "apple123";
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
@@ -670,6 +670,7 @@ bool Websetup() {
 
   Serial.print("Camera Stream Ready! Go to: http://");
   Serial.println(WiFi.localIP());
+  digitalWrite(4, HIGH);
 
   // Start streaming web server
   startCameraServer();
@@ -807,6 +808,7 @@ void matrixprint() {
 
 void setup() {
   // put your setup code here, to run once:
+  pinMode(4, OUTPUT);
   Ultrasonic.start();  // attaches the servo on pin 9 to the servo object
   // Robot.start();
   // Web.setup();
