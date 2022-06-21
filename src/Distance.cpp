@@ -26,19 +26,16 @@ void Distance::LookAngle(int angle) {
 }
 
 int Distance::GetDistance() {
-  int distance;
+  int duration;
 
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  distance = pulseIn(echoPin, HIGH) * 0.034 / 2;
-  Serial.println(distance);
-  if (distance < 1.5) {
-    GetDistance();
-  }
-  return distance;
+  duration = pulseIn(echoPin, HIGH);
+  Serial.println(duration * 0.034 / 2);
+  return duration * 0.034 / 2;
 }
 
 int Distance::ScanLeft() {
@@ -57,5 +54,12 @@ int Distance::ScanFoward() {
 }
 
 int Distance::WaterSensor() {
-  return analogRead(WaterSensorPin);
+  Serial.print("Water Sensor Value: ");
+  int value = analogRead(WaterSensorPin);
+  Serial.println(value);
+  if (value > 50) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
