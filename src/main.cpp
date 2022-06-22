@@ -21,7 +21,7 @@ Distance Ultrasonic;
 MessageToArduino Robot;
 // WebServer Web;
 
-const int squareSize = 22;
+const int squareSize = 30;
 // const int SidesquareSize = 22;
 
 byte PositionArray[50][50] = {0};
@@ -72,7 +72,7 @@ int checkNextPosition(int i, int j) {
 }
 
 void getDistance() {
-  left = Ultrasonic.ScanRight() - 13;
+  left = Ultrasonic.ScanRight() - 18;
 
   rightMatrixCheck = checkNextPosition(x_value, y_value + 1);
 
@@ -80,7 +80,7 @@ void getDistance() {
 
   forwardMatrixCheck = checkNextPosition(x_value + 1, y_value);
 
-  right = Ultrasonic.ScanLeft() - 13;
+  right = Ultrasonic.ScanLeft() - 18;
 
   leftMatrixCheck = checkNextPosition(x_value, y_value - 1);
   NextMatrix = checkNextPosition(x_value - 1, y_value);
@@ -318,17 +318,18 @@ void findpath() {
       Serial.println();
       if (abs_x == 1) {
         Serial.println("    go back 1 step");
+        Robot.Forward();
       }
 
       if (abs_x == -1) {
         Serial.println("    go forward 1 step");
         Robot.Forward();
-      } else if (abs_y == 1) {
+      } else if (abs_y == -1) {
         turnDirection('R');
         Robot.Forward();
         turnDirection('L');
         Serial.println("    go right 1 step");
-      } else if (abs_y == -1) {
+      } else if (abs_y == 1) {
         Serial.println("    go left 1 step");
         turnDirection('L');
         Robot.Forward();
@@ -370,7 +371,7 @@ void heur() {
 }
 
 const char *ssid = "ROGPhone";
-const char *password = "apple123";
+const char *password = "";
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
@@ -754,18 +755,20 @@ int servocontrol() {
       moveDir('F');
       WaterConst = Ultrasonic.WaterSensor();
     }
-
-    if ((((forward < squareSize) || (leftMatrixCheck == 4)) && ((forward < squareSize) || (rightMatrixCheck == 4)) && ((left < squareSize) || (leftMatrixCheck == 4))) || (WaterConst == 1)) {  // stop
+      getDistance(); 
+    if ((forward < squareSize) && ((right < squareSize) || (rightMatrixCheck == 4)) && ((left < squareSize) || (leftMatrixCheck == 4))) {  // stop
       Serial.println(F("mapped everything or stuck"));
 
       AddBlockToMatrix();
       // AddBlockToMatrix();
       startx = x_value;
       starty = y_value;
+      heur();
+      findpath();
       if (!WebStarted) {
         WebStarted = true;
         endloop = 1;
-        Websetup();
+        // Websetup();
       }
     }
 
@@ -774,10 +777,12 @@ int servocontrol() {
     AddBlockToMatrix();
     startx = x_value;
     starty = y_value;
+    heur();
+    findpath();
     if (!WebStarted) {
       WebStarted = true;
       endloop = 1;
-      Websetup();
+      // Websetup();
     }
   }
   return 0;
